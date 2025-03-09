@@ -1,0 +1,132 @@
+[debug] [2025-03-05T19:39:07.278Z] ----------------------------------------------------------------------
+[debug] [2025-03-05T19:39:07.281Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login
+[debug] [2025-03-05T19:39:07.281Z] CLI Version:   13.32.0
+[debug] [2025-03-05T19:39:07.281Z] Platform:      win32
+[debug] [2025-03-05T19:39:07.282Z] Node Version:  v22.14.0
+[debug] [2025-03-05T19:39:07.282Z] Time:          Wed Mar 05 2025 16:39:07 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2025-03-05T19:39:07.282Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-03-05T19:39:07.284Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] i  Firebase optionally collects CLI and Emulator Suite usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you.
+ 
+[debug] [2025-03-05T19:39:07.845Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-03-05T19:39:07.845Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[info] i  To change your data collection preference at any time, run `firebase logout` and log in again. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=874901330&redirect_uri=http%3A%2F%2Flocalhost%3A9005
+[info] 
+[info] Waiting for authentication...
+[debug] [2025-03-05T19:40:39.503Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2025-03-05T19:40:39.503Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2025-03-05T19:40:40.073Z] <<< [apiv2][status] POST https://accounts.google.com/o/oauth2/token 200
+[debug] [2025-03-05T19:40:40.073Z] <<< [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[info] 
+[info] +  Success! Logged in as mateus.queiroz.ti.mq@gmail.com 
+[debug] [2025-03-05T19:40:50.114Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:269:49)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-03-05T19:41:37.194Z] ----------------------------------------------------------------------
+[debug] [2025-03-05T19:41:37.197Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2025-03-05T19:41:37.198Z] CLI Version:   13.32.0
+[debug] [2025-03-05T19:41:37.198Z] Platform:      win32
+[debug] [2025-03-05T19:41:37.199Z] Node Version:  v22.14.0
+[debug] [2025-03-05T19:41:37.199Z] Time:          Wed Mar 05 2025 16:41:37 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2025-03-05T19:41:37.199Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-03-05T19:41:37.209Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-03-05T19:41:37.209Z] > authorizing via signed-in user (mateus.queiroz.ti.mq@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\mateu\Downloads\LOGIN-CADASTRO
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-03-05T19:42:21.592Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:21.592Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:21.593Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-03-05T19:42:22.388Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-03-05T19:42:22.388Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project voluntariado-e3dde (VOLUNTARIADO) 
+[info] 
+=== Dataconnect Setup
+[debug] [2025-03-05T19:42:30.183Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:30.183Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:30.183Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/voluntariado-e3dde/billingInfo [none]
+[debug] [2025-03-05T19:42:31.509Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/voluntariado-e3dde/billingInfo 200
+[debug] [2025-03-05T19:42:31.509Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/voluntariado-e3dde/billingInfo {"name":"projects/voluntariado-e3dde/billingInfo","projectId":"voluntariado-e3dde","billingAccountName":"","billingEnabled":false}
+[info] i  dataconnect: ensuring required API sqladmin.googleapis.com is enabled... 
+[debug] [2025-03-05T19:42:31.511Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:31.511Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:31.511Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com [none]
+[debug] [2025-03-05T19:42:31.511Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com x-goog-quota-user=projects/voluntariado-e3dde
+[debug] [2025-03-05T19:42:32.954Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com 200
+[debug] [2025-03-05T19:42:32.954Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com [omitted]
+[warn] !  dataconnect: missing required API sqladmin.googleapis.com. Enabling now... 
+[debug] [2025-03-05T19:42:32.956Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:32.956Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:32.956Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com:enable [none]
+[debug] [2025-03-05T19:42:32.956Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com:enable x-goog-quota-user=projects/voluntariado-e3dde
+[debug] [2025-03-05T19:42:34.179Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com:enable 200
+[debug] [2025-03-05T19:42:34.180Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com:enable [omitted]
+[debug] [2025-03-05T19:42:44.195Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:44.195Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:44.195Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com [none]
+[debug] [2025-03-05T19:42:44.195Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com x-goog-quota-user=projects/voluntariado-e3dde
+[debug] [2025-03-05T19:42:45.293Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com 200
+[debug] [2025-03-05T19:42:45.293Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/sqladmin.googleapis.com [omitted]
+[info] +  dataconnect: required API sqladmin.googleapis.com is enabled 
+[info] +  Wrote dataconnect\dataconnect.yaml 
+[info] +  Wrote dataconnect\schema\schema.gql 
+[info] +  Wrote dataconnect\connector\connector.yaml 
+[info] +  Wrote dataconnect\connector\queries.gql 
+[info] +  Wrote dataconnect\connector\mutations.gql 
+[info] i  If you'd like to add the generated SDK to your app your, run firebase init dataconnect:sdk 
+[info] i  If you'd like to provision a CloudSQL Postgres instance on the Firebase Data Connect no-cost trial:
+1. Please upgrade to the pay-as-you-go (Blaze) billing plan. Visit the following page:
+     https://console.firebase.google.com/project/voluntariado-e3dde/usage/details
+2. Run firebase init dataconnect again to configure the Cloud SQL instance.
+3. Run firebase deploy --only dataconnect to deploy your Data Connect service. 
+[info] 
+=== Firestore Setup
+[debug] [2025-03-05T19:42:45.326Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:45.326Z] Checked if tokens are valid: true, expires at: 1741207238073
+[debug] [2025-03-05T19:42:45.327Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/firestore.googleapis.com [none]
+[debug] [2025-03-05T19:42:45.327Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/firestore.googleapis.com x-goog-quota-user=projects/voluntariado-e3dde
+[debug] [2025-03-05T19:42:46.322Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/firestore.googleapis.com 200
+[debug] [2025-03-05T19:42:46.322Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/voluntariado-e3dde/services/firestore.googleapis.com [omitted]
+[debug] [2025-03-05T19:42:51.340Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:269:49)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2025-03-05T19:43:19.437Z] ----------------------------------------------------------------------
+[debug] [2025-03-05T19:43:19.440Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2025-03-05T19:43:19.441Z] CLI Version:   13.32.0
+[debug] [2025-03-05T19:43:19.441Z] Platform:      win32
+[debug] [2025-03-05T19:43:19.441Z] Node Version:  v22.14.0
+[debug] [2025-03-05T19:43:19.441Z] Time:          Wed Mar 05 2025 16:43:19 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2025-03-05T19:43:19.441Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-03-05T19:43:24.486Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\mateu\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:269:49)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7)
+[error] 
+[error] Error: An unexpected error has occurred.

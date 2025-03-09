@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Cadastro</title>
+    <style>
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        input { width: 100%; padding: 8px; margin-top: 5px; }
+        button { padding: 10px 20px; margin-right: 10px; }
+        .error { color: red; margin-top: 10px; }
+        #loader { display: none; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loader">Verificando autenticação...</div>
+        
+        <div id="authContent" style="display: none;">
+            <h2>Login/Cadastro</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" id="password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="handleAuth('signup')">Cadastrar</button>
+                    <button type="button" onclick="handleAuth('login')">Entrar</button>
+                </div>
+                <div id="errorMessage" class="error"></div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            initializeApp 
+        } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjFvnUJMtOSll7r0gREYsa6XaQRjtheWY",
+            authDomain: "voluntariado-e3dde.firebaseapp.com",
+            databaseURL: "https://voluntariado-e3dde-default-rtdb.firebaseio.com",
+            projectId: "voluntariado-e3dde",
+            storageBucket: "voluntariado-e3dde.firebasestorage.app",
+            messagingSenderId: "1013080901588",
+            appId: "1:1013080901588:web:268838a8c5c50ecf04b841",
+            measurementId: "G-EB2H7PMR72"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loader = document.getElementById('loader');
+        const authContent = document.getElementById('authContent');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Verificar autenticação
+        loader.style.display = 'block';
+        onAuthStateChanged(auth, (user) => {
+            loader.style.display = 'none';
+            authContent.style.display = user ? 'none' : 'block';
+            if(user) window.location.href = 'dashboard.html';
+        });
+
+        // Função de autenticação
+        window.handleAuth = async (action) => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            errorMessage.textContent = '';
+            loader.style.display = 'block';
+
+            try {
+                if (action === 'signup') {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    // Login automático após cadastro
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                handleAuthError(error);
+            }
+        };
+
+        function handleAuthError(error) {
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    errorMessage.textContent = 'Este email já está cadastrado.';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage.textContent = 'Email inválido.';
+                    break;
+                case 'auth/weak-password':
+                    errorMessage.textContent = 'Senha deve ter pelo menos 6 caracteres.';
+                    break;
+                case 'auth/user-not-found':
+                    errorMessage.textContent = 'Usuário não encontrado.';
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage.textContent = 'Senha incorreta.';
+                    break;
+                default:
+                    errorMessage.textContent = 'Erro: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

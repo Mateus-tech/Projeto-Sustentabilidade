@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoMarket Dashboard - Sustentabilidade</title>
+  <!-- Font Awesome para ícones -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+  <style>
+    /* Estilos omitidos para brevidade */
+  </style>
+</head>
+<body>
+  <!-- Fundo Animado -->
+  <div class="background-animation"></div>
+  <!-- Botão de menu para mobile -->
+  <div class="menu-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </div>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="https://via.placeholder.com/120" alt="Perfil" class="profile-img" id="sidebarProfile">
+      <div class="user-info">
+        <i class="fas fa-user-circle"></i>
+        <span id="userName">Nome do Usuário</span>
+      </div>
+    </div>
+    <div class="menu-item" onclick="loadContent('profile')">
+      <i class="fas fa-user"></i>
+      <span>Meu Perfil</span>
+    </div>
+    <div class="menu-item" onclick="loadContent('new-product')">
+      <i class="fas fa-plus-circle"></i>
+      <span>Novo Produto</span>
+    </div>
+    <div class="menu-item" onclick="loadContent('my-products')">
+      <i class="fas fa-box-open"></i>
+      <span>Meus Produtos</span>
+    </div>
+    <div class="menu-item" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Sair</span>
+    </div>
+  </div>
+  <!-- Conteúdo Principal -->
+  <div class="main-content" id="mainContent">
+    <!-- Conteúdo dinâmico -->
+  </div>
+  <!-- Modal Detalhado -->
+  <div id="productModal" class="modal">
+    <!-- Conteúdo do modal -->
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjFvnUJMtOSll7r0gREYsa6XaQRjtheWY",
+      authDomain: "voluntariado-e3dde.firebaseapp.com",
+      databaseURL: "https://voluntariado-e3dde-default-rtdb.firebaseio.com",
+      projectId: "voluntariado-e3dde",
+      storageBucket: "voluntariado-e3dde.firebasestorage.app",
+      messagingSenderId: "1013080901588",
+      appId: "1:1013080901588:web:268838a8c5c50ecf04b841",
+      measurementId: "G-EB2H7PMR72"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        // Exibe foto, nome e email (se disponíveis)
+        document.getElementById('sidebarProfile').src = user.photoURL || 'https://via.placeholder.com/120';
+        document.getElementById('userName').textContent = user.displayName || 'Nome do Usuário';
+        loadContent('my-products');
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+      }
+    };
+
+    window.toggleSidebar = () => {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar.style.transform === 'translateX(0%)' || sidebar.style.transform === '') {
+        sidebar.style.transform = 'translateX(-100%)';
+      } else {
+        sidebar.style.transform = 'translateX(0%)';
+      }
+    };
+
+    window.loadContent = async (section) => {
+      const mainContent = document.getElementById('mainContent');
+      mainContent.innerHTML = '';
+      if (section === 'profile') {
+        mainContent.innerHTML = await loadProfileContent();
+      } else if (section === 'new-product') {
+        mainContent.innerHTML = await loadNewProductForm();
+      } else if (section === 'my-products') {
+        mainContent.innerHTML = await loadProductsContent();
+        applyFilter(); // Aplica o filtro ao carregar a página de produtos
+      }
+    };
+
+    async function loadProfileContent() {
+      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const userData = userDoc.data();
+      return `
+        <div class="profile-section">
+          <h2>Meu Perfil</h2>
+          <div class="profile-info">
+            <div class="form-group">
+              <label>Nome:</label>
+              <input type="text" id="profileName" value="${userData?.name || ''}">
+            </div>
+            <div class="form-group">
+              <label>Email:</label>
+              <input type="email" id="profileEmail" value="${userData?.email || ''}" disabled>
+            </div>
+            <button class="btn" onclick="updateProfile()">Salvar Alterações</button>
+          </div>
+        </div>`;
+    }
+
+    window.updateProfile = async () => {
+      try {
+        const userData = { name: document.getElementById('profileName').value };
+        await updateDoc(doc(db, "users", currentUser.uid), userData);
+        alert("Perfil atualizado com sucesso!");
+      } catch (error) {
+        console.error("Erro ao atualizar perfil:", error);
+      }
+    };
+
+    async function loadNewProductForm() {
+      return `
+        <div class="product-form">
+          <h2>Novo Produto</h2>
+          <form id="productForm" onsubmit="return validateForm()">
+            <div class="form-group">
+              <label>Nome do Produto:</label>
+              <input type="text" id="productName" required>
+            </div>
+            <div class="form-group">
+              <label>Descrição:</label>
+              <textarea id="productDescription" required></textarea>
+            </div>
+            <div class="form-group">
+              <label>Preço (R$):</label>
+              <input type="number" id="productPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label>Tipo de Transação:</label>
+              <select id="productTransaction" required>
+                <option value="">Selecione</option>
+                <option value="venda">Venda</option>
+                <option value="troca">Troca</option>
+                <option value="doacao">Doação</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Categoria:</label>
+              <select id="productCategory" required>
+                <option value="">Selecione</option>
+                <option value="eletronicos">Eletrônicos</option>
+                <option value="moveis">Móveis</option>
+                <option value="vestuario">Vestuário</option>
+                <option value="outros">Outros</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Condição do Item:</label>
+              <select id="productCondition" required>
+                <option value="">Selecione</option>
+                <option value="novo">Novo</option>
+                <option value="usado">Usado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantidade:</label>
+              <input type="number" id="productQuantity" required>
+            </div>
+            <div class="form-group">
+              <label>Localização:</label>
+              <input type="text" id="productLocation" required>
+            </div>
+            <div class="form-group full-width">
+              <label>Benefícios Ambientais:</label>
+              <textarea id="productBenefits" placeholder="Descreva os benefícios ambientais do produto" required></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Histórico de Sustentabilidade:</label>
+              <textarea id="productSustainHistory" placeholder="Descreva o histórico sustentável do produto" required></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Galeria de Imagens (URLs, separadas por vírgula):</label>
+              <input type="text" id="productImages" placeholder="https://image1, https://image2, ..." required>
+            </div>
+            <button type="button" class="btn" onclick="saveProduct()">Salvar Produto</button>
+          </form>
+        </div>`;
+    }
+
+    function validateForm() {
+      const form = document.getElementById('productForm');
+      if (!form.checkValidity()) {
+        alert("Por favor, preencha todos os campos obrigatórios.");
+        return false;
+      }
+      return true;
+    }
+
+    window.saveProduct = async () => {
+      try {
+        if (!validateForm()) return;
+
+        const productData = {
+          name: document.getElementById('productName').value,
+          description: document.getElementById('productDescription').value,
+          price: parseFloat(document.getElementById('productPrice').value),
+          transaction: document.getElementById('productTransaction').value,
+          category: document.getElementById('productCategory').value,
+          condition: document.getElementById('productCondition').value,
+          quantity: parseInt(document.getElementById('productQuantity').value),
+          location: document.getElementById('productLocation').value,
+          benefits: document.getElementById('productBenefits').value,
+          sustainHistory: document.getElementById('productSustainHistory').value,
+          images: document.getElementById('productImages').value.split(',').map(url => url.trim()),
+          userId: currentUser.uid,
+          createdAt: new Date()
+        };
+
+        await addDoc(collection(db, "products"), productData);
+        alert("Produto cadastrado com sucesso!");
+
+        // Recarrega a lista de produtos após o cadastro
+        loadContent('my-products');
+      } catch (error) {
+        console.error("Erro ao salvar produto:", error);
+      }
+    };
+
+    async function loadProductsContent() {
+      return `
+        <div class="filter-section">
+          <label for="filterTransaction">Filtrar por Transação:</label>
+          <select id="filterTransaction" onchange="applyFilter()">
+            <option value="">Todos</option>
+            <option value="venda">Venda</option>
+            <option value="troca">Troca</option>
+            <option value="doacao">Doação</option>
+          </select>
+        </div>
+        <div id="productsContainer" class="cards-container">
+          Carregando produtos...
+        </div>`;
+    }
+
+    window.applyFilter = async () => {
+      const filterValue = document.getElementById('filterTransaction').value;
+      const productsContainer = document.getElementById('productsContainer');
+      let q;
+
+      if (filterValue) {
+        q = query(collection(db, "products"), where("transaction", "==", filterValue));
+      } else {
+        q = query(collection(db, "products"));
+      }
+
+      onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+          return;
+        }
+
+        let productsHTML = '';
+        querySnapshot.forEach(docSnap => {
+          const product = docSnap.data();
+          productsHTML += renderProductCard(docSnap.id, product);
+        });
+
+        productsContainer.innerHTML = productsHTML;
+      });
+    };
+
+    function renderProductCard(id, product) {
+      return `
+      <div class="product-card" onclick="showProductDetail('${id}')">
+        <img src="${getProductImage(product)}" alt="Imagem do produto" class="card-image">
+        <div class="card-content">
+          <h3>${product.name}</h3>
+          <div class="card-tags">
+            <span class="tag category">${product.category}</span>
+            <span class="tag condition">${product.condition}</span>
+          </div>
+          <p><i class="fas fa-tag"></i> ${product.transaction}</p>
+          <p><i class="fas fa-dollar-sign"></i> R$ ${product.price.toFixed(2)}</p>
+        </div>
+      </div>`;
+    }
+
+    function getProductImage(product) {
+      if (product.images && product.images.length > 0) {
+        return product.images[0];
+      } else {
+        // Fallback baseado na categoria
+        switch (product.category) {
+          case 'eletronicos': return 'https://source.unsplash.com/350x250/?electronics';
+          case 'moveis': return 'https://source.unsplash.com/350x250/?furniture';
+          case 'vestuario': return 'https://source.unsplash.com/350x250/?clothing';
+          default: return 'https://source.unsplash.com/350x250/?product';
+        }
+      }
+    }
+
+    window.showProductDetail = async (productId) => {
+      const docRef = doc(db, "products", productId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const product = docSnap.data();
+        const modal = document.getElementById('productModal');
+        let galleryHTML = '';
+        if (product.images && product.images.length > 0) {
+          product.images.forEach(url => {
+            galleryHTML += `<img src="${url}" onclick="changeMainImage('${url}')">`;
+          });
+        }
+        modal.innerHTML = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <img id="mainModalImage" src="${getProductImage(product)}" alt="Imagem principal">
+              <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+              <h2>${product.name}</h2>
+              <p>${product.description}</p>
+              <div class="card-tags">
+                <span class="tag category">${product.category}</span>
+                <span class="tag condition">${product.condition}</span>
+              </div>
+              <p><strong>Transação:</strong> ${product.transaction}</p>
+              <p><strong>Preço:</strong> R$ ${product.price.toFixed(2)}</p>
+              <p><strong>Quantidade:</strong> ${product.quantity}</p>
+              <p><strong>Localização:</strong> ${product.location}</p>
+              <div class="gallery">${galleryHTML}</div>
+              <h3>Informações do Vendedor</h3>
+              <p>Nome: ${currentUser.displayName || "Vendedor"}</p>
+              <p>Email: ${currentUser.email || "Não informado"}</p>
+              <h3>Benefícios Ambientais</h3>
+              <p>${product.benefits}</p>
+              <h3>Localização no Mapa</h3>
+              <div class="map">
+                <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(product.location)}" allowfullscreen>
+                </iframe>
+              </div>
+              <h3>Histórico de Sustentabilidade</h3>
+              <p>${product.sustainHistory}</p>
+            </div>
+          </div>`;
+        modal.style.display = 'block';
+      }
+    };
+
+    window.changeMainImage = (url) => {
+      document.getElementById('mainModalImage').src = url;
+    };
+
+    window.closeModal = () => {
+      document.getElementById('productModal').style.display = 'none';
+    };
+    window.applyFilter = async () => {
+  const filterValue = document.getElementById('filterTransaction').value;
+  const productsContainer = document.getElementById('productsContainer');
+  
+  // Sempre filtrar pelo usuário atual
+  let q = query(
+    collection(db, "products"), 
+    where("userId", "==", currentUser.uid)
+  );
+
+  // Adicionar filtro de transação se selecionado
+  if (filterValue) {
+    q = query(q, where("transaction", "==", filterValue));
+  }
+
+  onSnapshot(q, (querySnapshot) => {
+    if (querySnapshot.empty) {
+      productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+      return;
+    }
+
+    productsContainer.innerHTML = querySnapshot.docs
+      .map(doc => renderProductCard(doc.id, doc.data()))
+      .join('');
+  });
+};
+    // Inicializa o filtro com a exibição padrão (todos)
+    window.applyFilter();
+  </script>
+</body>
+</html>
+
+os usuarios estao vindo de Authentication do firebase e os produtos ainda nao estao sendo exibindo ,estao so carregando
